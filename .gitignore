@@ -1,6 +1,49 @@
+# Python
 __pycache__/
-.ipynb_checkpoints/
+*.py[cod]
+*.egg-info/
+*.egg
+*.pyo
+*.pyd
+.Python
 .env
-*.pyc
-*.pkl
+.venv
+*.so
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Conda environment artifacts
+*.conda
+*.env
+*.lock
+*.log
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editable install link
+*.egg-link
+
+# Site packages cache (if pip puts anything here)
+pip-wheel-metadata/
+
+# Generated files
+*.npy
+*.npz
+*.h5
+*.pt
+*.ckpt
+
+# Your project-specific
 data/
+output/
+runs/
+
+# Virtual environments (if created locally)
+env/
