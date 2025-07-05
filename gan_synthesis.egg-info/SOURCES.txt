@@ -1,0 +1,8 @@
+README.md
+setup.py
+gan_synthesis/__init__.py
+gan_synthesis/utils.py
+gan_synthesis.egg-info/PKG-INFO
+gan_synthesis.egg-info/SOURCES.txt
+gan_synthesis.egg-info/dependency_links.txt
+gan_synthesis.egg-info/top_level.txt

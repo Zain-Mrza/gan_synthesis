@@ -17,10 +17,9 @@ def is_acceptable(training_example, type):
     return acceptable[type], training_example
 
 
-scaler = MinMaxScaler()
-
-
 def scale(volume):
+    scaler = MinMaxScaler()
+
     volume_transformed = scaler.fit_transform(volume.reshape(-1, 1))
     volume = volume_transformed.reshape(volume.shape)
     return volume
@@ -30,7 +29,7 @@ def read(training_example: str or int, type: str):
     name, string_num = is_acceptable(training_example, type)
 
     volume = nib.load(
-        r"C:\Users\zzmir\MNIST-GAN\data\train\BraTS20_Training_"
+        r"C:\Users\zzmir\gan_synthesis\data\train\BraTS20_Training_"
         + string_num
         + r"\BraTS20_Training_"
         + string_num
@@ -49,7 +48,3 @@ def show_slices(training_examples: list, type: str):
         plt.imshow(slice, cmap="gray")
         plt.show()
     plt.tight_layout()
-
-
-examples = [1, 43, 234, 233, 2]
-show_slices(examples, "contrast")

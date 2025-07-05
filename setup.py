@@ -1,0 +1,8 @@
+# setup.py
+from setuptools import find_packages, setup
+
+setup(
+    name="gan_synthesis",
+    version="0.1",
+    packages=find_packages(),  # Automatically includes gan_synthesis/
+)
