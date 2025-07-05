@@ -7,13 +7,11 @@ def is_acceptable(training_example, type):
     acceptable = {"seg": "seg", "contrast": "t1ce"}
     if int(training_example) > 369:
         raise ValueError("No such file, only 369 training files exist")
-        return False
     if isinstance(training_example, int):
         training_example = str(training_example)
     training_example = training_example.zfill(3)
     if type not in acceptable:
         raise ValueError("Types must be either 'seg' or 'contrast'")
-        return False
     return acceptable[type], training_example
 
 
