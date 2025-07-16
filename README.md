@@ -1,6 +1,5 @@
 ## GAN PROJECT
 
-Creating a GAN for MNIST digit creation
+Gan to create fake tumors in sliced MRI images (2D brain scans)
 
-- May incorporate class labels
-- We shall see
+Add noise to random part of brain to put tumor in
