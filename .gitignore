@@ -44,6 +44,7 @@ pip-wheel-metadata/
 data/
 output/
 runs/
+processed_data
 
 # Virtual environments (if created locally)
 env/
