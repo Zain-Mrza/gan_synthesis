@@ -48,3 +48,8 @@ processed_data
 
 # Virtual environments (if created locally)
 env/
+
+# pixi environments
+.pixi/
+!.pixi/config.toml
+.vscode/
