@@ -16,3 +16,6 @@ matplotlib = ">=3.10.3,<4"
 ipykernel = ">=6.29.5,<7"
 pip = ">=25.1.1,<26"
 nibabel = ">=5.3.2,<6"
+
+[pypi-dependencies]
+gan_synthesis = { path = ".", editable = true }
