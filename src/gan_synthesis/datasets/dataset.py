@@ -1,0 +1,34 @@
+import torch
+from torch.utils.data import Dataset, random_split
+
+from gan_synthesis.preprocessing.transforms import read_data
+
+
+class VAEMaskDataset(Dataset):  # file names are indexed at 1
+    def __init__(self):
+        pass
+
+    def __len__(self):
+        return 369
+
+    def __getitem__(self, idx):
+        image = read_data(idx, "contrast")
+        mask = read_data(idx, "seg")
+
+        image = torch.tensor(image, dtype=torch.float32).unsqueeze(0)
+        mask = torch.tensor(mask, dtype=torch.long)
+
+        return image, mask
+
+    def split(self, trainp=0.8):
+        if trainp > 1:
+            raise ValueError(
+                "Parameter must be percent (as a decimal) of dataset to be train set. Must be less than 1."
+            )
+        train_size = int(trainp * len(self))
+        test_size = len(self) - train_size
+
+        generator = torch.Generator().manual_seed(42)
+
+        return random_split(self, [train_size, test_size], generator=generator)
+        # returns train_dataset, test_dataset (still need to instantiate withe DataLoader)
