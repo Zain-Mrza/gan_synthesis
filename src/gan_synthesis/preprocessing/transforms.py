@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import nibabel as nib
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
@@ -140,7 +142,14 @@ def crop_tumor_center(index):
 
 
 def read_data(index, mode: str):
-    image = np.load(
-        rf"C:\Users\zzmir\gan_synthesis\processed_data\{mode}_slice_{index}.npy"
-    )
+    root = find_project_root()
+    image = np.load(rf"{root}\processed_data\{mode}_slice_{index}.npy")
     return image
+
+
+def find_project_root(marker=".git"):
+    current = Path(__file__).resolve().parent
+    for parent in [current] + list(current.parents):
+        if (parent / marker).exists():
+            return parent
+    raise FileNotFoundError(f"Project root with marker '{marker}' not found.")

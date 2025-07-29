@@ -4,7 +4,7 @@ from torch.utils.data import Dataset, random_split
 from gan_synthesis.preprocessing.transforms import read_data
 
 
-class VAEMaskDataset(Dataset):  # file names are indexed at 1
+class Dataset(Dataset):  # file names are indexed at 1
     def __init__(self):
         pass
 
@@ -16,7 +16,7 @@ class VAEMaskDataset(Dataset):  # file names are indexed at 1
         mask = read_data(idx, "seg")
 
         image = torch.tensor(image, dtype=torch.float32).unsqueeze(0)
-        mask = torch.tensor(mask, dtype=torch.long)
+        mask = torch.tensor(mask, dtype=torch.long).unsqueeze(0)
 
         return image, mask
 
