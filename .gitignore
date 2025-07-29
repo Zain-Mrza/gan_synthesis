@@ -34,7 +34,6 @@ Thumbs.db
 pip-wheel-metadata/
 
 # Generated files
-*.npy
 *.npz
 *.h5
 *.pt
@@ -44,7 +43,6 @@ pip-wheel-metadata/
 data/
 output/
 runs/
-processed_data
 
 # Virtual environments (if created locally)
 env/
@@ -52,3 +50,4 @@ env/
 # pixi environments
 .pixi/
 !.pixi/config.toml
+k
