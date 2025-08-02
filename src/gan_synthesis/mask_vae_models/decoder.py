@@ -10,8 +10,10 @@ class Decoder(nn.Module):
         self.decoder = nn.Sequential(
             nn.Unflatten(1, (128, 12, 12)),
             nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),  # 12 → 24
+            nn.BatchNorm2d(num_features=64),
             nn.ReLU(),
             nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),  # 24 → 48
+            nn.BatchNorm2d(num_features=32),
             nn.ReLU(),
             nn.ConvTranspose2d(
                 32, out_channels, kernel_size=4, stride=2, padding=1

@@ -1,12 +1,12 @@
 import torch
 import torch.nn as nn
-from torch.utils.data import random_split
 
 
 class VAE(nn.Module):
     def __init__(self, encoder, decoder):
         super().__init__()
         self.encoder = encoder
+        self.latent_dim = encoder.latent_dim
         self.decoder = decoder
 
     def reparametrize(self, mu, logvar):
@@ -22,15 +22,11 @@ class VAE(nn.Module):
 
         return reconstructed, mu, logvar
 
-    def split(self, trainp):
-        if trainp > 1:
-            raise ValueError("Must be a decimal as a percent")
-        train_size = int(trainp * len(self))
-        test_size = len(self) - train_size
-
-        generator = torch.Generator().manual_seed(42)
-
-        return random_split(self, [train_size, test_size], generator=generator)
+    @torch.no_grad()
+    def sample(self, num_samples=1, device="cuda"):
+        z = torch.randn(num_samples, self.latent_dim).to(device)
+        samples = self.decoder(z).argmax(dim=1).squeeze()
+        return samples
 
 
 def kl_divergence(mu, logvar):

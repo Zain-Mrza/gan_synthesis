@@ -4,15 +4,19 @@ import torch.nn as nn
 class Encoder(nn.Module):
     def __init__(self, in_channels=1, latent_dim=128):
         super().__init__()
+        self.latent_dim = latent_dim
 
         self.encoder = nn.Sequential(
             nn.Conv2d(
                 in_channels, 32, kernel_size=4, stride=2, padding=1
             ),  # 96x96 → 48x48
+            nn.BatchNorm2d(num_features=32),
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=1),  # 48x48 → 24x24
+            nn.BatchNorm2d(num_features=64),
             nn.ReLU(),
             nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1),  # 24x24 → 12x12
+            nn.BatchNorm2d(num_features=128),
             nn.ReLU(),
         )
 
