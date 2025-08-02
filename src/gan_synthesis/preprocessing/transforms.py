@@ -141,6 +141,20 @@ def crop_tumor_center(index):
     return image, seg
 
 
+def get_cropped():
+    for i in range(369):
+        image, seg = crop_tumor_center(i)
+        root = find_project_root()
+        np.save(
+            rf"{root}\cropped_data\contrast_slice_{i}",
+            image,
+        )
+        np.save(
+            rf"{root}\cropped_data\seg_slice_{i}",
+            seg,
+        )
+
+
 def read_data(index, mode: str):
     root = find_project_root()
     image = np.load(rf"{root}\processed_data\{mode}_slice_{index}.npy")
@@ -153,3 +167,8 @@ def find_project_root(marker=".git"):
         if (parent / marker).exists():
             return parent
     raise FileNotFoundError(f"Project root with marker '{marker}' not found.")
+
+
+def read_cropped(idx, t):
+    image = np.load(rf"C:\Users\zmirz\gan-project\cropped_data\{t}_slice_{idx}.npy")
+    return image
