@@ -32,7 +32,7 @@ Thumbs.db
 
 # Site packages cache (if pip puts anything here)
 pip-wheel-metadata/
-
+*__pycache__
 # Generated files
 *.npz
 *.h5
@@ -51,3 +51,4 @@ env/
 .pixi/
 processed_data
 cropped_data/
+Pictures/

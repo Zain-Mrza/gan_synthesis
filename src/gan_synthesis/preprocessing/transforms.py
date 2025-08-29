@@ -2,6 +2,7 @@ from pathlib import Path
 
 import nibabel as nib
 import numpy as np
+import torch
 from sklearn.preprocessing import MinMaxScaler
 
 
@@ -169,6 +170,12 @@ def find_project_root(marker=".git"):
     raise FileNotFoundError(f"Project root with marker '{marker}' not found.")
 
 
-def read_cropped(idx, t):
+def read_cropped(idx, t, as_type="normal"):
     image = np.load(rf"C:\Users\zmirz\gan-project\cropped_data\{t}_slice_{idx}.npy")
+
+    if as_type == "pt":
+        if t == "seg":
+            return torch.tensor(image, dtype=torch.float32).unsqueeze(0)
+        return torch.tensor(image, dtype=torch.float32).unsqueeze(0)
+
     return image

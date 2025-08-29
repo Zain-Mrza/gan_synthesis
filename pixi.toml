@@ -21,3 +21,4 @@ tqdm = ">=4.67.1,<5"
 [pypi-dependencies]
 gan_synthesis = { path = ".", editable = true }
 torch = { version = ">=2.5.1", index = "https://download.pytorch.org/whl/cu124" }
+importlib = ">=1.0.4, <2"

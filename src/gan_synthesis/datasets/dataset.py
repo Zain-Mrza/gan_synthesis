@@ -6,7 +6,7 @@ from gan_synthesis.preprocessing.transforms import read_cropped
 
 class Dataset(Dataset):  # file names are indexed at 1
     def __init__(self):
-        pass
+        self.weights = torch.tensor([0.1614, 0.2952, 0.2217, 0.3217])
 
     def __len__(self):
         return 369
