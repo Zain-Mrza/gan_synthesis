@@ -6,7 +6,7 @@ def gn_act(ch, groups=8):  # GN + SiLU
     return nn.Sequential(nn.GroupNorm(groups, ch), nn.SiLU(inplace=True))
 
 class ResBlock(nn.Module):
-    def __init__(self, ch, ch_out=None, groups=8):
+    def __init__(self, ch, ch_out=None, groups=8, use_skip=True):
         super().__init__()
         ch_out = ch if ch_out is None else ch_out
         self.same_ch = (ch == ch_out)
@@ -15,7 +15,11 @@ class ResBlock(nn.Module):
         self.conv2 = nn.Conv2d(ch_out, ch_out, 3, padding=1, bias=False)
         self.norm2 = nn.GroupNorm(groups, ch_out)
         self.act = nn.SiLU(inplace=True)
-        self.skip = (nn.Identity() if self.same_ch else nn.Conv2d(ch, ch_out, 1, bias=False))
+
+        self.skip_or_nah = use_skip                             #boolean
+
+        if self.skip_or_nah:
+            self.skip = (nn.Identity() if self.same_ch else nn.Conv2d(ch, ch_out, 1, bias=False))
 
     def forward(self, x):
         h = self.conv1(x)
@@ -26,7 +30,7 @@ class ResBlock(nn.Module):
         h = self.conv2(h)
         h = self.norm2(h)
 
-        return self.act(h + self.skip(x))
+        return self.act(h + self.skip(x)) if self.skip_or_nah else self.act(h)
 
 class Down(nn.Module):
     def __init__(self, ch_in, ch_out):
@@ -40,20 +44,33 @@ class Down(nn.Module):
         return x, skip
 
 class Up(nn.Module):
-    def __init__(self, ch_in, ch_skip, ch_out, groups=8):
+    def __init__(self, ch_in, ch_skip, ch_out, groups=8, use_skip=True):
         super().__init__()
         self.up = nn.Upsample(scale_factor=2, mode='nearest')
         self.conv_up = nn.Conv2d(ch_in, ch_out, 3, padding=1, bias=False)
-        self.block = ResBlock(ch_out + ch_skip, ch_out)  # concat skip
+
+        if use_skip:
+            self.block = ResBlock(ch_out + ch_skip, ch_out)  # concat skip
+        else:
+            self.block = ResBlock(ch_out, ch_out, use_skip=False)
         # learnable gate on the skip
-        self.alpha = nn.Parameter(torch.tensor(0.5))  # init: moderate skip strength
+
+        self.use_skip = use_skip
+
+        if self.use_skip:
+            self.alpha = nn.Parameter(torch.tensor(-2.0))  # init: moderate skip strength
+            self.dropout = nn.Dropout(0.8)
+
         self.groups = groups
+
+        self.use_skip = use_skip
 
     def forward(self, x, skip):
         x = self.up(x)
         x = self.conv_up(x)
         # gated skip
-        x = torch.cat([x, self.alpha.sigmoid() * skip], dim=1)
+        if self.use_skip:
+            x = torch.cat([x, self.dropout(self.alpha.sigmoid() * skip)], dim=1)
         x = self.block(x)
         return x
 
@@ -105,8 +122,8 @@ class Decoder(nn.Module):
 
         self.u1 = Up(base*8, base*8, base*4)  # 6 -> 12, skip s4
         self.u2 = Up(base*4, base*4, base*2)  # 12 -> 24, skip s3
-        self.u3 = Up(base*2, base*2, base*1)  # 24 -> 48, skip s2
-        self.u4 = Up(base*1, base*1, base*1)  # 48 -> 96, skip s1
+        self.u3 = Up(base*2, base*2, base*1, use_skip=False)  # 24 -> 48, skip s2
+        self.u4 = Up(base*1, base*1, base*1, use_skip=False)  # 48 -> 96, skip s1
 
         self.head = nn.Sequential(
             ResBlock(base, base),
@@ -154,21 +171,17 @@ class VAE(nn.Module):
 
     def decode(self, z: torch.Tensor, skips_bottleneck=None):
         if skips_bottleneck is None:
-            # Decode without external skips (useful for sampling)
-            # Create dummy zero skips matching channel scales when sampling
-            # based on the "base" progression in Decoder: [base, 2*base, 4*base, 8*base]
-            # We infer channel sizes from trained modules when possible.
-            base = self.decoder.head[0].conv1.in_channels  # equals `base`
-            B = z.size(0)
-            device = z.device
-            s1 = torch.zeros(B, base,     96//2, device=device).view(B, base, 48, 48)
-            s2 = torch.zeros(B, base*2,   24,     device=device).view(B, base*2, 24, 24)
-            s3 = torch.zeros(B, base*4,   12,     device=device).view(B, base*4, 12, 12)
-            s4 = torch.zeros(B, base*8,   6,      device=device).view(B, base*8, 6, 6)
+            base = self.decoder.head[0].conv1.in_channels  # or self.decoder.base if you store it
+            B, device = z.size(0), z.device
+            s1 = torch.zeros(B, base,     96, 96, device=device)
+            s2 = torch.zeros(B, base*2,   48, 48, device=device)
+            s3 = torch.zeros(B, base*4,   24, 24, device=device)
+            s4 = torch.zeros(B, base*8,   12, 12, device=device)
             return self.decoder(z, (s1, s2, s3, s4))
         else:
             skips, bottleneck = skips_bottleneck
             return self.decoder(z, skips, bottleneck)
+
 
     def forward(self, x: torch.Tensor):
         (mu, logvar), skips, bottleneck = self.encoder(x)
@@ -180,11 +193,10 @@ class VAE(nn.Module):
     def sample(self, n: int, device=None):
         device = device or next(self.parameters()).device
         z = torch.randn(n, self.latent_dim, device=device)
-        # When sampling we have no skips; decode with zero skips
-        base = self.decoder.head[0].conv1.in_channels
-        s1 = torch.zeros(n, base,   48, 48, device=device)
-        s2 = torch.zeros(n, base*2, 24, 24, device=device)
-        s3 = torch.zeros(n, base*4, 12, 12, device=device)
-        s4 = torch.zeros(n, base*8,  6,  6, device=device)
-        logits = self.decoder(z, (s1, s2, s3, s4))
-        return logits
+        base = self.decoder.head[0].conv1.in_channels  # or self.decoder.base
+        s1 = torch.zeros(n, base,     96, 96, device=device)
+        s2 = torch.zeros(n, base*2,   48, 48, device=device)
+        s3 = torch.zeros(n, base*4,   24, 24, device=device)
+        s4 = torch.zeros(n, base*8,   12, 12, device=device)
+        return self.decoder(z, (s1, s2, s3, s4))
+
