@@ -49,6 +49,5 @@ env/
 
 # pixi environments
 .pixi/
-processed_data
-cropped_data/
+processed_data/
 Pictures/
