@@ -2,7 +2,7 @@
 authors = ["Zain-Mrza <you@example.com>"]
 channels = ["conda-forge"]
 name = "gan_synthesis"
-platforms = ["win-64"]
+platforms = ["win-64", "linux-64"]
 version = "0.1.0"
 
 [tasks]
@@ -20,5 +20,5 @@ tqdm = ">=4.67.1,<5"
 
 [pypi-dependencies]
 gan_synthesis = { path = ".", editable = true }
-torch = { version = ">=2.5.1", index = "https://download.pytorch.org/whl/cu124" }
+torch = { version = ">=2.5.1", index = "https://download.pytorch.org/whl/cu128" }
 importlib = ">=1.0.4, <2"
