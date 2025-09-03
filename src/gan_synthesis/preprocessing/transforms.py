@@ -41,7 +41,7 @@ def scale(volume):
     return volume
 
 
-def read(training_example: str or int, im_type: str):
+def read(training_example, im_type: str):
     name, string_num = is_acceptable(training_example, im_type)
 
     volume = nib.load(
@@ -171,7 +171,8 @@ def find_project_root(marker=".git"):
 
 
 def read_cropped(idx, t, as_type="normal"):
-    image = np.load(rf"C:\Users\zmirz\gan-project\cropped_data\{t}_slice_{idx}.npy")
+    
+    image = np.load(rf"/workspace/gan_synthesis/cropped_data/{t}_slice_{idx}.npy")
 
     if as_type == "pt":
         if t == "seg":

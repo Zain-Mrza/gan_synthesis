@@ -120,8 +120,8 @@ class Decoder(nn.Module):
         self.pre = ResBlock(base*8, base*8)
         self.attn = BottleneckAttn(base*8)
 
-        self.u1 = Up(base*8, base*8, base*4)  # 6 -> 12, skip s4
-        self.u2 = Up(base*4, base*4, base*2)  # 12 -> 24, skip s3
+        self.u1 = Up(base*8, base*8, base*4, use_skip=False)  # 6 -> 12, skip s4
+        self.u2 = Up(base*4, base*4, base*2, use_skip=False)  # 12 -> 24, skip s3
         self.u3 = Up(base*2, base*2, base*1, use_skip=False)  # 24 -> 48, skip s2
         self.u4 = Up(base*1, base*1, base*1, use_skip=False)  # 48 -> 96, skip s1
 
@@ -143,7 +143,7 @@ class Decoder(nn.Module):
         return self.head(x)
 
 
-class VAE(nn.Module):
+class VAE1(nn.Module):
     """Variational Autoencoder wiring for the provided Encoder/Decoder.
 
     Forward returns (logits, mu, logvar). Use logits with CE/Dice/Focal.
