@@ -7,6 +7,6 @@ setup(
     packages=find_packages(where="src"),
     include_package_data=True,
     package_data={
-        "gan_synthesis": ["mask_vae_models/*"]  # include model weights/configs
+        "gan_synthesis": ["mask_vae_models/*", "model_utils/*"]  # include model weights/configs
     },
 )
