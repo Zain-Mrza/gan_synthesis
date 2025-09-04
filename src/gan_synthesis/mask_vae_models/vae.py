@@ -8,11 +8,11 @@ from gan_synthesis.mask_vae_models.encoder import Encoder
 
 
 class VAE(nn.Module):
-    def __init__(self, size=96, latent_dim=128):
+    def __init__(self, latent_dim=128):
         super().__init__()
         self.latent_dim = latent_dim
-        self.encoder = Encoder(size=size, latent_dim=latent_dim)
-        self.decoder = Decoder(size=size, latent_dim=latent_dim)
+        self.encoder = Encoder(latent_dim=latent_dim)
+        self.decoder = Decoder(latent_dim=latent_dim)
 
     def reparametrize(self, mu, logvar):
         std = torch.exp(0.5 * logvar)

@@ -3,7 +3,7 @@ from gan_synthesis.model_utils.modules import Down, Same
 
 
 class Encoder(nn.Module):
-    def __init__(self, size=96, in_channels=1, latent_dim=128):
+    def __init__(self, in_channels=1, latent_dim=128):
         super().__init__()
         self.latent_dim = latent_dim
 
@@ -43,13 +43,13 @@ class Encoder(nn.Module):
             Same(32),
             Down(32, 64),          # Spatial dim halved (48 -> 24)
             Same(64, 64),
-            Down(64, 128),         # Spatial dim halved (24 -> 12)
-            Same(128, 128)
+            Down(64, 128, use_norm=False),         # Spatial dim halved (24 -> 12)
+            Same(128, 128, use_norm=False)
         )
 
         self.flatten = nn.Flatten()
-        self.fc_mu = nn.Linear(int(128 * size / 8 * size / 8), latent_dim)
-        self.fc_logvar = nn.Linear(int(128 * size / 8 * size / 8), latent_dim)
+        self.fc_mu = nn.Linear(int(128 * 12*12), latent_dim)
+        self.fc_logvar = nn.Linear(int(128 * 12*12), latent_dim)
 
     def forward(self, x):
         x = self.encoder(x)  # shape: (B, 128, 12, 12)
