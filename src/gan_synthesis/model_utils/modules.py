@@ -59,12 +59,13 @@ class Same(nn.Module):
 
         return x
 
-class Valid(nn.Module):
-    def __init__(self, in_channels, out_channels=None):
+class ChannelDouble(nn.Module):
+    def __init__(self, in_channels, out_channels=None, groups=8):
         super().__init__()
 
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1, padding=0)
-        self.norm = nn.GroupNorm(num_channels=self.out_channels, groups=8)
+        self.out_channels = out_channels if out_channels else in_channels*2
+        self.conv = nn.Conv2d(in_channels=in_channels, out_channels=self.out_channels, kernel_size=3, stride=1, padding='same', bias=False)
+        self.norm = nn.GroupNorm(num_channels=self.out_channels, num_groups=groups)
         self.act = nn.ReLU()
     
     def forward(self, x):
@@ -79,9 +80,9 @@ class Right(nn.Module):
         super().__init__()
 
         self.right = nn.Sequential(
-            Valid(in_channels, out_channels=out_channels),             # Doubles channel count
-            Same(in_channels*2, act='relu'),
-            Same(in_channels*2, act='relu')
+            ChannelDouble(in_channels, out_channels=out_channels),             # Doubles channel count
+            Same(out_channels, act='relu'),
+            Same(out_channels, act='relu')
         )
 
     def forward(self, x):
@@ -94,7 +95,13 @@ class Contract(nn.Module):
         self.right = Right(in_channels, out_channels)
         self.pool = nn.MaxPool2d(2)
     def forward(self, x):
-        x = self.right(x)
-        shrunk = self.pool(x)
+        skip = self.right(x)
+        x = self.pool(skip)
 
-        return shrunk, x
+        return x, skip
+    
+class Expand(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+        self.up = Up
