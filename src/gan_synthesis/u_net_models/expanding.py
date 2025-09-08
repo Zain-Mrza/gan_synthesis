@@ -1,6 +1,8 @@
-from gan_synthesis.model_utils.modules import Expand, Right
-import torch.nn as nn
 import torch
+import torch.nn as nn
+
+from gan_synthesis.model_utils.modules import Expand, Right
+
 
 class Expanding(nn.Module):
     def __init__(self, anchor):
@@ -15,8 +17,7 @@ class Expanding(nn.Module):
         top, middle, bottom = skips
         x = self.expand1(x, bottom)
         x = self.expand2(x, middle)
-        x = torch.cat((x, top))
+        x = torch.cat((x, top), dim=1)
         x = self.right(x)
 
         return x
-

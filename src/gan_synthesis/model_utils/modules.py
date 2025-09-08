@@ -1,5 +1,6 @@
-import torch.nn as nn
 import torch
+import torch.nn as nn
+
 
 class Down(nn.Module):
     def __init__(self, in_channels, out_channels, groups=8, use_norm=True):
@@ -103,17 +104,17 @@ class Contract(nn.Module):
         return x, skip
     
 class Expand(nn.Module):
-    def __init__(self, in_channels, skip=True, up=True):
+    def __init__(self, in_channels, up=True):
         super().__init__()
         
-        self.skip = skip
         self.right = Right(in_channels=in_channels, out_channels=int(in_channels/2))
         self.up = Up(in_channels=int(in_channels/2), out_channels=int(in_channels/4))
 
     def forward(self, x, skip):
         if x.shape[1] != skip.shape[1]:
-            print("Different channel dimensions for skip tensor and inptu tensor")
-        print(x.shape, skip.shape)
-        tensor = torch.cat((x, skip), dim=1) if self.skip else x
+            print("Different channel dimensions for skip tensor and input tensor")
+        tensor = torch.cat((x, skip), dim=1)
         x = self.right(tensor)
         x = self.up(x)
+
+        return x

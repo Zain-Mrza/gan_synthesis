@@ -1,5 +1,7 @@
 import torch.nn as nn
+
 from gan_synthesis.model_utils.modules import Contract
+
 
 class Contracting(nn.Module):
     def __init__(self, anchor):

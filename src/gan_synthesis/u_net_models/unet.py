@@ -1,8 +1,9 @@
-# src/gan_synthesis/u_net_models/unet.py
 import torch.nn as nn
+
 from gan_synthesis.model_utils.modules import Right, Up
 from gan_synthesis.u_net_models.contracting import Contracting
 from gan_synthesis.u_net_models.expanding import Expanding
+
 
 class UNet(nn.Module):
     def __init__(self, anchor=16):
