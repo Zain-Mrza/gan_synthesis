@@ -176,7 +176,7 @@ def read_cropped(idx, t, workspace=False, as_type="normal"):
         image = np.load(rf"/workspace/gan_synthesis/cropped_data/{t}_slice_{idx}.npy")
     else:
         root = find_project_root()
-        image = np.load(rf"{root}\cropped_data\{t}_slice_{idx}.npy")
+        image = np.load(rf"{root}/cropped_data/{t}_slice_{idx}.npy")
 
     if as_type == "pt":
         if t == "seg":
