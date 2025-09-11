@@ -11,11 +11,12 @@ version = "0.1.0"
 python = "3.12.*"
 numpy = ">=2.3.2,<3"
 scikit-learn = ">=1.7.1,<2"
-matplotlib = ">=3.10.3,<4"
 ipykernel = ">=6.29.5,<7"
 pip = ">=25.1.1,<26"
 nibabel = ">=5.3.2,<6"
 tqdm = ">=4.67.1,<5"
+matplotlib = ">=3.10.6,<4"
+freetype = ">=2.14.0,<3"
 
 
 [pypi-dependencies]
