@@ -170,8 +170,7 @@ def find_project_root(marker=".git"):
     raise FileNotFoundError(f"Project root with marker '{marker}' not found.")
 
 
-def read_cropped(idx, t, as_type="normal", workspace=False):
-    
+def read_cropped(idx, t, as_type="normal", workspace=False):    
     if workspace:
         image = np.load(rf"/workspace/gan_synthesis/cropped_data/{t}_slice_{idx}.npy")
     else:
