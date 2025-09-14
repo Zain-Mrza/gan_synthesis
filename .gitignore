@@ -51,3 +51,4 @@ env/
 .pixi/
 processed_data/
 Pictures/
+*.pth
