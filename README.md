@@ -1,12 +1,6 @@
 # GAN PROJECT
 
-Gan to create fake tumors in sliced MRI images (2D brain scans)
+VAE to generate artificial segmentation masks.
 
-Add noise to random part of brain to put tumor in
-Trained on the 2020 BraTS dataset
-
-
-# Method according to this paper: https://arxiv.org/html/2402.17317v1
-
-Initial segmentation mask VAE results:
+cGAN to generate fake brain tumors using artificial segmentation masks.
 
