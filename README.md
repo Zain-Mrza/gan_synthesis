@@ -34,8 +34,8 @@ It combines **Variational Autoencoders (VAEs)** and **Conditional GANs (cGANs)**
 
 ```text
    BraTS 2020 MRI ----> Preprocessing ----> VAE ----> Fake Segmentation Mask
-                                                   |
-                                                   v
-                                Original MRI ----> cGAN ----> Synthetic Tumor MRI
+                                                                |
+                                                                v
+                                           Original MRI ----> cGAN ----> Synthetic Tumor MRI
 
 
