@@ -26,7 +26,6 @@ It combines **Variational Autoencoders (VAEs)** and **Conditional GANs (cGANs)**
 ## 🎯 Project Goals
 - Explore hybrid VAE–GAN pipelines for medical image synthesis.
 - Generate realistic tumor masks and images to **augment medical datasets**.
-- Provide a reproducible workflow for **brain tumor imaging research**.
 
 ---
 
