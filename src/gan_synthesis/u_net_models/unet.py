@@ -32,8 +32,7 @@ class UNet(nn.Module):
         index = random.randint(0, len(dataset)-1)
         contrast, seg = dataset[index]
 
-        self.eval()
-        with torch.no_grad():
+        with torch.inference_mode():
             recon = torch.squeeze(torch.argmax(self(contrast.unsqueeze(0)), dim=1)).numpy()
         
         fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(10, 8))
@@ -46,7 +45,7 @@ class UNet(nn.Module):
         axs[1].set_title("Original Segmentation Map")
 
         axs[2].imshow(recon)
-        axs[2].set_title("Reconstrcuted Segmentation Map")
+        axs[2].set_title("Reconstructed Segmentation Map")
 
         plt.tight_layout()
         plt.show()
