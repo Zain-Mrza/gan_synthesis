@@ -53,3 +53,4 @@ processed_data/
 Pictures/
 *.pth
 empty_crops/
+*checkpoints/
