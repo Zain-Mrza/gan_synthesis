@@ -52,3 +52,4 @@ env/
 processed_data/
 Pictures/
 *.pth
+empty_crops/
