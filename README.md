@@ -1,6 +1,6 @@
 # Brain Tumor Image Synthesis (BraTS 2020)
 
-This project uses the **[BraTS 2020 dataset]([url](https://www.kaggle.com/datasets/awsaf49/brats20-dataset-training-validation))** to generate synthetic brain tumor MRI images.  
+This project uses the **[BraTS 2020 dataset]**(https://www.kaggle.com/datasets/awsaf49/brats20-dataset-training-validation) to generate synthetic brain tumor MRI images.  
 It combines **Variational Autoencoders (VAEs)** and **Conditional GANs (cGANs)** to produce realistic tumor-containing scans for research and potential data augmentation.
 
 ---
