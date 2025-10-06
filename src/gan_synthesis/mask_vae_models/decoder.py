@@ -1,5 +1,6 @@
 import torch.nn as nn
-from gan_synthesis.model_utils.modules import Up, Same
+
+from gan_synthesis.model_utils.modules import Same, Up
 
 
 class Decoder(nn.Module):
@@ -10,13 +11,17 @@ class Decoder(nn.Module):
         self.unflatten = nn.Unflatten(1, (128, 12, 12)) # Starting with 128 channels of 12x12
 
         self.decoder = nn.Sequential(
-            Same(128), 
+            Same(128),
+            Same(128),
             Up(128, 64),        # 12x12 -> 24x24
 
-            nn.Dropout(p=0.3),
+            nn.Dropout(p=0.5),
 
             Up(64, 32),         # 24x24 -> 48x48
+            Same(32),
+            Same(32),
             Up(32, 16),         # 48x48 -> 96x96
+            Same(16),
             Same(16)
         )
         
