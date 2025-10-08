@@ -27,28 +27,20 @@ class VAE(nn.Module):
 
         return reconstructed, mu, logvar
 
-    @torch.no_grad()
-    def sample(self, num_samples=1, temperature=1.0, mode="argmax", overlay=None):
+    @torch.inference_mode()
+    def sample(self, num_samples=1, overlay=None):
         """
-        overlay: optional tensor [N, H, W] or [N, 1, H, W] for grayscale images
-                to overlay the segmentation mask on.
+        Function to create fake segmentation mask.
         """
-        self.eval()
+
         device = next(self.parameters()).device
 
         # Sample latent z and decode
         z = torch.randn(num_samples, self.latent_dim, device=device)
         logits = self.decoder(z)  # [N, C, H, W]
 
-        # Get predicted class masks
-        if mode == "argmax":
-            preds = logits.argmax(dim=1)  # [N, H, W]
-        else:
-            probs = torch.softmax(logits / temperature, dim=1)
-            N, C, H, W = probs.shape
-            preds = torch.multinomial(
-                probs.permute(0, 2, 3, 1).reshape(-1, C), 1
-            ).view(N, H, W)
+        
+        preds = logits.argmax(dim=1)  # [N, H, W]
 
         # Move to CPU for plotting
         preds_np = preds.cpu().numpy()
@@ -68,8 +60,6 @@ class VAE(nn.Module):
             plt.title(f"Sample {i+1}")
             plt.axis("off")
             plt.show()
-
-        return preds
 
 
 def kl_divergence(mu, logvar):
